@@ -23,13 +23,14 @@ from rest_framework_simplejwt.views import (
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import health_check
+from .utils.custom_token_refresh_view import CustomTokenRefreshView
 
 urlpatterns = [
     path('admin', admin.site.urls),
     path('api/auth', include("authapp.urls")),
     path('api/blog', include("blogapp.urls")),
     path('api/auth/token', TokenObtainPairView.as_view(), name='token'),
-    path('api/auth/refresh_token', TokenRefreshView.as_view(), name='refresh_token'),
+    path('api/auth/refresh_token', CustomTokenRefreshView.as_view(), name='refresh_token'),
 
     # Add root health check
     path('healthz', health_check, name='health_check'),
