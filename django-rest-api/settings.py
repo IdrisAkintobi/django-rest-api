@@ -126,7 +126,6 @@ REST_FRAMEWORK = {
         "DRF_RENDERER_CLASSES",
         default=[
             "rest_framework.renderers.JSONRenderer",
-            "rest_framework.renderers.BrowsableAPIRenderer",  # disable in prod if needed
         ],
     ),
 }
