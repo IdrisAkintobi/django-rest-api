@@ -10,23 +10,27 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
+import environ
 from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Initialize environ
+env = environ.Env(
+    DEBUG=(bool, False)  # default False if not provided
+)
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*u_fs4#ox7rwd+@!ecy@1#4*9b=h9z@6z(l$(k7ghzj=po!bhr'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ["*"]
+SECRET_KEY = env("SECRET_KEY")
+DEBUG = env("DEBUG")  # Automatically parsed as bool
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
 APPEND_SLASH=False
 
@@ -78,12 +82,8 @@ WSGI_APPLICATION = 'django-rest-api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db("DATABASE_URL")
 }
 
 
@@ -96,7 +96,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        "OPTIONS": {"min_length": 8},
+        "OPTIONS": {"min_length": env.int("PASSWORD_LENGTH")},
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -109,26 +109,38 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    "DEFAULT_PAGINATION_CLASS": "django-rest-api.utils.pagination.CustomLimitOffsetPagination",
+    "PAGE_SIZE": env.int("PAGE_SIZE", default=20),
+    "DEFAULT_THROTTLE_RATES": {
+        "user": env("USER_THROTTLE", default="1000/day"),
+        "anon": "100/hour",   # unauthenticated users
+        "burst": "10/minute"  # custom throttle
+    },
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.AnonRateThrottle",
+    ],
+
+    "DEFAULT_RENDERER_CLASSES": env.list(
+        "DRF_RENDERER_CLASSES",
+        default=[
+            "rest_framework.renderers.JSONRenderer",
+            "rest_framework.renderers.BrowsableAPIRenderer",  # disable in prod if needed
+        ],
+    ),
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=env.int("ACCESS_TOKEN_LIFETIME_MINUTES")),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=env.int("REFRESH_TOKEN_LIFETIME_DAYS")),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
 
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
-    "AUDIENCE": None,
-    "ISSUER": 'django-app',
-
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id",
-
-    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=10),
-    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=3),
+    "ISSUER": 'django-rest-api',
 }
 
 
@@ -136,11 +148,8 @@ SIMPLE_JWT = {
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
