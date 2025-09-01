@@ -10,6 +10,7 @@
         "authapp",
         "blogapp",
         "collectstatic",
+        "healthz",
         "noinput",
         "simplejwt",
         "Userapp"

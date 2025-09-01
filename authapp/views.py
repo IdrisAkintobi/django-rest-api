@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 
 #  Health check
-@api_view(["GET"])
+@api_view()
 def health_check(request):
     return Response({"status": "ok"})
 
