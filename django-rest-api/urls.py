@@ -22,6 +22,7 @@ from rest_framework_simplejwt.views import (
 )
 from django.conf import settings
 from django.conf.urls.static import static
+from authapp.views import health_check
 
 urlpatterns = [
     path('admin', admin.site.urls),
@@ -29,6 +30,9 @@ urlpatterns = [
     path('api/blog', include("blogapp.urls")),
     path('api/auth/token', TokenObtainPairView.as_view(), name='token'),
     path('api/auth/refresh_token', TokenRefreshView.as_view(), name='refresh_token'),
+
+    # Add root health check
+    path('', health_check, name='health_check')
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
