@@ -32,7 +32,8 @@ urlpatterns = [
     path('api/auth/refresh_token', TokenRefreshView.as_view(), name='refresh_token'),
 
     # Add root health check
-    path('', health_check, name='health_check')
+    path('healthz', health_check, name='health_check'),
+    path('', health_check, name='root_check')
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
