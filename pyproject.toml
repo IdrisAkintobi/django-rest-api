@@ -1,0 +1,13 @@
+[project]
+name = "django-rest-api"
+version = "0.1.0"
+description = "Basic django rest api"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "django==5.2.5",
+    "djangorestframework>=3.16.1",
+    "djangorestframework-simplejwt>=5.5.1",
+    "gunicorn>=23.0.0",
+    "pillow>=11.3.0",
+]
