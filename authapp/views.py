@@ -5,6 +5,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 
 
+#  Health check
+@api_view(["GET"])
+def health_check(request):
+    return Response({"status": "ok"})
+
 # Register user
 @api_view(["POST"])
 def register_user(request):
