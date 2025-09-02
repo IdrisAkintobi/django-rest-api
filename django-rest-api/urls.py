@@ -24,6 +24,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from .views import health_check
 from .utils.custom_token_refresh_view import CustomTokenRefreshView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 urlpatterns = [
     path('admin', admin.site.urls),
@@ -34,7 +35,12 @@ urlpatterns = [
 
     # Add root health check
     path('healthz', health_check, name='health_check'),
-    path('', health_check, name='root_check')
+    path('', health_check, name='root_check'),
+
+    # API Doc
+    path("schema", SpectacularAPIView.as_view(), name="schema"),
+    path("swagger", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("redoc", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
