@@ -12,6 +12,7 @@
         "collectstatic",
         "healthz",
         "noinput",
+        "Redoc",
         "simplejwt",
         "Userapp"
     ]
