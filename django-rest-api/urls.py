@@ -14,32 +14,31 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
-from rest_framework_simplejwt.views import TokenObtainPairView
+
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import health_check
+from django.contrib import admin
+from django.urls import include, path
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 from .utils.custom_token_refresh_view import CustomTokenRefreshView
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+from .views import health_check
 
 urlpatterns = [
     path('admin', admin.site.urls),
-    path('api/auth', include("authapp.urls")),
-    path('api/blog', include("blogapp.urls")),
+    path('api/auth', include('authapp.urls')),
+    path('api/blog', include('blogapp.urls')),
     path('api/auth/login', TokenObtainPairView.as_view(), name='token'),
     path('api/auth/refresh_token', CustomTokenRefreshView.as_view(), name='refresh_token'),
-
     # Add root health check
     path('healthz', health_check, name='health_check'),
     path('', health_check, name='root_check'),
-
     # API Doc
-    path("schema", SpectacularAPIView.as_view(), name="schema"),
-    path("swagger", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
-    path("redoc", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+    path('schema', SpectacularAPIView.as_view(), name='schema'),
+    path('swagger', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('redoc', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-

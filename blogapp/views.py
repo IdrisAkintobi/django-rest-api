@@ -1,14 +1,15 @@
 from drf_spectacular.utils import extend_schema
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
 from rest_framework.response import Response
+
 from blogapp.models import Blog
 from blogapp.serializer import BlogSerializer, UpdateBlogSerializer
 
 
 @extend_schema(request=BlogSerializer, responses=BlogSerializer)
-@api_view(["POST"])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_blog(request):
     serializer = BlogSerializer(data=request.data)
@@ -19,7 +20,7 @@ def create_blog(request):
 
 
 @extend_schema(responses=BlogSerializer(many=True))
-@api_view(["GET"])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def list_blogs(request):
     blogs = Blog.objects.filter(is_draft=False)
@@ -28,7 +29,7 @@ def list_blogs(request):
 
 
 @extend_schema(responses=BlogSerializer)
-@api_view(["GET"])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_blog(request, slug):
     blog = Blog.objects.get(slug=slug)
@@ -37,7 +38,7 @@ def get_blog(request, slug):
 
 
 @extend_schema(request=UpdateBlogSerializer, responses=BlogSerializer)
-@api_view(["PATCH"])
+@api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def update_blog(request, slug):
     blog = Blog.objects.get(slug=slug)
@@ -49,7 +50,7 @@ def update_blog(request, slug):
 
 
 @extend_schema(responses={204: None})
-@api_view(["DELETE"])
+@api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_blog(request, slug):
     blog = Blog.objects.get(slug=slug)

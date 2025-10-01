@@ -11,9 +11,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
-import environ
 from datetime import timedelta
 from pathlib import Path
+
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,11 +29,11 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-SECRET_KEY = env("SECRET_KEY")
-DEBUG = env("DEBUG")  # Automatically parsed as bool
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env('DEBUG')  # Automatically parsed as bool
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
 
-APPEND_SLASH=False
+APPEND_SLASH = False
 
 
 # Application definition
@@ -48,7 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'blogapp',
     'authapp',
-    "drf_spectacular",
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -83,9 +84,7 @@ WSGI_APPLICATION = 'django-rest-api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-DATABASES = {
-    'default': env.db("DATABASE_URL")
-}
+DATABASES = {'default': env.db('DATABASE_URL')}
 
 
 # Password validation
@@ -97,7 +96,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        "OPTIONS": {"min_length": env.int("PASSWORD_LENGTH")},
+        'OPTIONS': {'min_length': env.int('PASSWORD_LENGTH')},
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -111,37 +110,35 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    "DEFAULT_PAGINATION_CLASS": "django-rest-api.utils.pagination.CustomLimitOffsetPagination",
-    "PAGE_SIZE": env.int("PAGE_SIZE", default=20),
-    "DEFAULT_THROTTLE_RATES": {
-        "user": env("USER_THROTTLE", default="1000/day"),
-        "anon": "100/hour",   # unauthenticated users
-        "burst": "10/minute"  # custom throttle
+    'DEFAULT_PAGINATION_CLASS': 'django-rest-api.utils.pagination.CustomLimitOffsetPagination',
+    'PAGE_SIZE': env.int('PAGE_SIZE', default=20),
+    'DEFAULT_THROTTLE_RATES': {
+        'user': env('USER_THROTTLE', default='1000/day'),
+        'anon': '100/hour',  # unauthenticated users
+        'burst': '10/minute',  # custom throttle
     },
-    "DEFAULT_THROTTLE_CLASSES": [
-        "rest_framework.throttling.UserRateThrottle",
-        "rest_framework.throttling.AnonRateThrottle",
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.AnonRateThrottle',
     ],
-
-    "DEFAULT_RENDERER_CLASSES": env.list(
-        "DRF_RENDERER_CLASSES",
+    'DEFAULT_RENDERER_CLASSES': env.list(
+        'DRF_RENDERER_CLASSES',
         default=[
-            "rest_framework.renderers.JSONRenderer",
+            'rest_framework.renderers.JSONRenderer',
         ],
     ),
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=env.int("ACCESS_TOKEN_LIFETIME_MINUTES")),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=env.int("REFRESH_TOKEN_LIFETIME_DAYS")),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
-    "UPDATE_LAST_LOGIN": False,
-
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,
-    "ISSUER": 'django-rest-api',
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=env.int('ACCESS_TOKEN_LIFETIME_MINUTES')),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=env.int('REFRESH_TOKEN_LIFETIME_DAYS')),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'UPDATE_LAST_LOGIN': False,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'ISSUER': 'django-rest-api',
 }
 
 
