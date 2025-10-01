@@ -1,13 +1,14 @@
 from drf_spectacular.utils import extend_schema
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
+
 from .serializer import UpdateUserSerializer, UserRegistrationSerializer
 
 
 @extend_schema(request=UserRegistrationSerializer, responses=UserRegistrationSerializer)
-@api_view(["POST"])
+@api_view(['POST'])
 def register_user(request):
     serializer = UserRegistrationSerializer(data=request.data)
     if serializer.is_valid():
@@ -17,7 +18,7 @@ def register_user(request):
 
 
 @extend_schema(request=UpdateUserSerializer, responses=UpdateUserSerializer)
-@api_view(["PATCH"])
+@api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def update_user(request):
     serializer = UpdateUserSerializer(request.user, data=request.data, partial=True)
@@ -28,7 +29,7 @@ def update_user(request):
 
 
 @extend_schema(responses={204: None})
-@api_view(["DELETE"])
+@api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_user(request):
     request.user.delete()

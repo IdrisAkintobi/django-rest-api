@@ -1,24 +1,21 @@
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework import serializers
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ["id", "email", "first_name", "last_name", "password"]
-        extra_kwargs = {
-            "password": {
-                "write_only": True
-            }
-        }
+        fields = ['id', 'email', 'first_name', 'last_name', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
 
     def validate_password(self, value):
         """Use Django’s built-in password validators"""
         try:
             validate_password(value)
         except DjangoValidationError as e:
-            raise serializers.ValidationError(e.messages)
+            raise serializers.ValidationError(e.messages) from e
         return value
 
     def create(self, validated_data):
@@ -26,18 +23,25 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         first_name = validated_data['first_name']
         last_name = validated_data['last_name']
 
-        user = get_user_model().objects.create(email=email, first_name=first_name, last_name=last_name)
-        user.set_password(validated_data["password"])
+        user = get_user_model().objects.create(
+            email=email, first_name=first_name, last_name=last_name
+        )
+        user.set_password(validated_data['password'])
         user.save()
         return user
+
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ["email", "first_name", "last_name", "bio", "profile_picture", "facebook", "linkedin"]
+        fields = [
+            'email',
+            'first_name',
+            'last_name',
+            'bio',
+            'profile_picture',
+            'facebook',
+            'linkedin',
+        ]
         # make email optional
-        extra_kwargs = {
-            "email": {
-                "required": False
-            }
-        }
+        extra_kwargs = {'email': {'required': False}}
